@@ -26,16 +26,16 @@ const Dashboard = ({ setActive }) => {
   return (
     <div className="content">
       <div className="greeting">
-        <h1>Good morning, Preeti ✦</h1>
-        <p>Your AI memory is active across 4 connected models · 3 pending memory suggestions</p>
+        <h1>Good morning, {USER_PROFILE.name} ✦</h1>
+        <p>Your AI memory is active across {MODELS.length} connected models · 3 pending memory suggestions</p>
       </div>
 
       <div className="stats-grid">
         {[
-          { label: 'Memories Stored', value: '847', sub: '+12 this week', cls: 'stat-accent-blue' },
-          { label: 'Sessions Synced', value: '124', sub: 'Across 4 models', cls: 'stat-accent-purple' },
-          { label: 'Knowledge Nodes', value: '2.4k', sub: 'Growing graph', cls: 'stat-accent-green' },
-          { label: 'Hours Saved', value: '38', sub: 'Vs. re-explaining', cls: 'stat-accent-amber' },
+          { label: 'Memories Stored', value: QUICK_STATS.memoriesStored.toLocaleString(), sub: '+12 this week', cls: 'stat-accent-blue' },
+          { label: 'Sessions Synced', value: QUICK_STATS.sessionsSynced, sub: `Across ${MODELS.length} models`, cls: 'stat-accent-purple' },
+          { label: 'Knowledge Nodes', value: (QUICK_STATS.knowledgeNodes / 1000).toFixed(1) + 'k', sub: 'Growing graph', cls: 'stat-accent-green' },
+          { label: 'Hours Saved', value: QUICK_STATS.hoursSaved, sub: 'Vs. re-explaining', cls: 'stat-accent-amber' },
         ].map((s, i) => (
           <div key={i} className={`stat-card ${s.cls}`}>
             <div className="stat-label">{s.label}</div>

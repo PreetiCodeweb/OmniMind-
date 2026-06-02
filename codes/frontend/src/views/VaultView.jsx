@@ -24,23 +24,32 @@ const VaultView = () => {
         ))}
       </div>
 
-      <div className="vault-grid">
-        {filtered.map(m => (
-          <div key={m.id} className="vault-card">
-            <div className="vault-card-accent" style={{ background: `linear-gradient(90deg, ${m.accent}, transparent)` }}></div>
-            <div className="vault-card-type">
-              <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: m.accent }}></div>
-              {m.type}
+      {filtered.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-icon">{EMPTY_STATES.noMemory.icon}</div>
+          <div className="empty-title">{EMPTY_STATES.noMemory.title}</div>
+          <div className="empty-body">{EMPTY_STATES.noMemory.message}</div>
+          <button className="action-btn primary" style={{ marginTop: '20px' }}>+ Create First Memory</button>
+        </div>
+      ) : (
+        <div className="vault-grid">
+          {filtered.map(m => (
+            <div key={m.id} className="vault-card">
+              <div className="vault-card-accent" style={{ background: `linear-gradient(90deg, ${m.accent}, transparent)` }}></div>
+              <div className="vault-card-type">
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: m.accent }}></div>
+                {m.type}
+              </div>
+              <div className="vault-card-title">{m.title}</div>
+              <div className="vault-card-body">{m.body}</div>
+              <div className="vault-card-footer">
+                <span className="vault-card-date">{m.date}</span>
+                <span className={`memory-tag ${m.tagColor}`} style={{ background: `${m.accent}18`, color: m.accent, padding: '2px 8px', borderRadius: '99px', fontSize: '10px' }}>{m.tag}</span>
+              </div>
             </div>
-            <div className="vault-card-title">{m.title}</div>
-            <div className="vault-card-body">{m.body}</div>
-            <div className="vault-card-footer">
-              <span className="vault-card-date">{m.date}</span>
-              <span className={`memory-tag ${m.tagColor}`} style={{ background: `${m.accent}18`, color: m.accent, padding: '2px 8px', borderRadius: '99px', fontSize: '10px' }}>{m.tag}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

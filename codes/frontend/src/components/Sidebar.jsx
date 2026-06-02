@@ -1,14 +1,4 @@
 const Sidebar = ({ active, setActive }) => {
-  const navItems = [
-    { id: 'dashboard', icon: '⬡', label: 'Overview' },
-    { id: 'chat', icon: '◇', label: 'Chat', badge: '3' },
-    { id: 'passport', icon: '◈', label: 'AI Passport' },
-    { id: 'vault', icon: '◻', label: 'Memory Vault', badge: '47' },
-    { id: 'graph', icon: '⬡', label: 'Knowledge Graph' },
-    { id: 'router', icon: '⇋', label: 'AI Router' },
-    { id: 'settings', icon: '◎', label: 'Settings' },
-  ];
-
   return (
     <div className="sidebar">
       <div className="sidebar-logo">
@@ -21,11 +11,11 @@ const Sidebar = ({ active, setActive }) => {
 
       <div className="sidebar-section">
         <div className="sidebar-label">Workspace</div>
-        {navItems.slice(0, 6).map(item => (
+        {MENU_ITEMS.slice(0, 6).map(item => (
           <div key={item.id} className={`nav-item ${active === item.id ? 'active' : ''}`} onClick={() => setActive(item.id)}>
             <span className="nav-icon">{item.icon}</span>
             <span>{item.label}</span>
-            {item.badge && <span className={`nav-badge ${item.badgeGreen ? 'green' : ''}`}>{item.badge}</span>}
+            {item.badge && <span className={`nav-badge ${item.badge.color === 'green' ? 'green' : ''}`}>{item.badge.count}</span>}
           </div>
         ))}
       </div>
@@ -48,10 +38,10 @@ const Sidebar = ({ active, setActive }) => {
           <span>Settings</span>
         </div>
         <div className="user-row">
-          <div className="user-avatar">P</div>
+          <div className="user-avatar">{USER_PROFILE.avatar}</div>
           <div>
-            <div className="user-name">Preeti</div>
-            <div className="user-plan">Pro · AI Engineer</div>
+            <div className="user-name">{USER_PROFILE.name}</div>
+            <div className="user-plan">{USER_PROFILE.tier} · {USER_PROFILE.email.split('@')[0]}</div>
           </div>
         </div>
       </div>

@@ -26,25 +26,28 @@ const App = () => {
   };
 
   return (
-    <div className="app">
-      <Sidebar active={active} setActive={setActive} />
-      <div className="main">
-        <div className="topbar">
-          <span className="topbar-title">{titles[active]}</span>
-          <div className="topbar-sep"></div>
-          <div className="model-selector">
-            <div className="model-selector-dot"></div>
-            Auto-routing active
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginLeft: '2px' }}>▾</span>
+    <>
+      <Notifications />
+      <div className="app">
+        <Sidebar active={active} setActive={setActive} />
+        <div className="main">
+          <div className="topbar">
+            <span className="topbar-title">{titles[active]}</span>
+            <div className="topbar-sep"></div>
+            <div className="model-selector">
+              <div className="model-selector-dot"></div>
+              Auto-routing active
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginLeft: '2px' }}>▾</span>
+            </div>
+            <div className="topbar-actions">
+              <button className="icon-btn" title="Search">⊙</button>
+              <button className="icon-btn" title="Notifications">◉</button>
+              <button className="icon-btn" title="Memory Sync">◈</button>
+            </div>
           </div>
-          <div className="topbar-actions">
-            <button className="icon-btn" title="Search">⊙</button>
-            <button className="icon-btn" title="Notifications">◉</button>
-            <button className="icon-btn" title="Memory Sync">◈</button>
-          </div>
+          {renderView()}
         </div>
-        {renderView()}
       </div>
-    </div>
+    </>
   );
 };
