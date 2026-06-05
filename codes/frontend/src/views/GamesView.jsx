@@ -36,6 +36,7 @@ const games = [
     accent: "#FFAAAA",
     players: "21.7k",
     difficulty: "Easy",
+    launchEndpoint: "http://localhost:8000/api/games/cyber-runner/start",
   },
 ];
 
@@ -43,6 +44,37 @@ const difficultyDot = { Easy: "#4ADE80", Medium: "#FACC15", Hard: "#F87171" };
 
 function GameCard({ game, index }) {
   const [hovered, setHovered] = useState(false);
+  const [launchState, setLaunchState] = useState("idle");
+
+  const launchGame = async () => {
+    if (!game.launchEndpoint) {
+      setLaunchState("unavailable");
+      setTimeout(() => setLaunchState("idle"), 1800);
+      return;
+    }
+
+    setLaunchState("starting");
+
+    try {
+      const response = await fetch(game.launchEndpoint, { method: "POST" });
+      if (!response.ok) {
+        throw new Error("Launch failed");
+      }
+      setLaunchState("started");
+    } catch (error) {
+      setLaunchState("error");
+    } finally {
+      setTimeout(() => setLaunchState("idle"), 2400);
+    }
+  };
+
+  const buttonLabel = {
+    idle: "Play Now",
+    starting: "Starting...",
+    started: "Started",
+    error: "Start Backend",
+    unavailable: "Soon",
+  }[launchState];
 
   return (
     <div
@@ -77,8 +109,12 @@ function GameCard({ game, index }) {
           />
           {game.difficulty}
         </span>
-        <button className="play-btn">
-          <span className="btn-text">Play Now</span>
+        <button
+          className="play-btn"
+          onClick={launchGame}
+          disabled={launchState === "starting"}
+        >
+          <span className="btn-text">{buttonLabel}</span>
           <span className="btn-arrow">→</span>
         </button>
       </div>
@@ -369,6 +405,10 @@ function GamesView() {
           box-shadow: 0 8px 24px var(--card-glow);
         }
         .play-btn:active { transform: scale(0.97); }
+        .play-btn:disabled {
+          cursor: wait;
+          opacity: 0.7;
+        }
         .btn-arrow {
           transition: transform 0.2s ease;
         }

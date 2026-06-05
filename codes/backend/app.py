@@ -6,6 +6,10 @@ from sqlalchemy.orm import sessionmaker, Session
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 import os
+from pathlib import Path
+import subprocess
+import sys
+import time
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -238,6 +242,11 @@ def get_db():
     finally:
         db.close()
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+CYBER_RUNNER_FILE = PROJECT_ROOT / "games" / "cyber_runner.py"
+CYBER_RUNNER_LOG = PROJECT_ROOT / "games" / "cyber_runner.log"
+cyber_runner_process = None
+
 # ============ API ROUTES ============
 
 # Root endpoint
@@ -248,6 +257,48 @@ async def root():
 @app.get("/health", tags=["Health"])
 async def health():
     return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
+
+# ============ GAME ROUTES ============
+@app.post("/api/games/cyber-runner/start", tags=["Games"])
+async def start_cyber_runner():
+    """Start the local Cyber Runner Pygame script."""
+    global cyber_runner_process
+
+    if not CYBER_RUNNER_FILE.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Game file not found: {CYBER_RUNNER_FILE}",
+        )
+
+    if cyber_runner_process and cyber_runner_process.poll() is None:
+        return {"status": "already_running", "file": str(CYBER_RUNNER_FILE)}
+
+    try:
+        with CYBER_RUNNER_LOG.open("w") as log_file:
+            cyber_runner_process = subprocess.Popen(
+                [sys.executable, str(CYBER_RUNNER_FILE)],
+                cwd=str(CYBER_RUNNER_FILE.parent),
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                start_new_session=True,
+            )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Could not start game: {exc}")
+
+    time.sleep(0.6)
+    if cyber_runner_process.poll() is not None:
+        log_text = CYBER_RUNNER_LOG.read_text(errors="replace")[-2000:]
+        raise HTTPException(
+            status_code=500,
+            detail=f"Cyber Runner exited immediately. {log_text}".strip(),
+        )
+
+    return {
+        "status": "started",
+        "pid": cyber_runner_process.pid,
+        "file": str(CYBER_RUNNER_FILE),
+        "log": str(CYBER_RUNNER_LOG),
+    }
 
 # ============ USER ROUTES ============
 @app.post("/api/users/", response_model=UserResponse, tags=["Users"])
