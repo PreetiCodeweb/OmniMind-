@@ -67,6 +67,25 @@ const MENU_ITEMS = [
   { id: 'graph', icon: '⬡', label: 'Knowledge Graph', badge: null },
   { id: 'router', icon: '⇋', label: 'AI Router', badge: null },
   { id: 'settings', icon: '◎', label: 'Settings', badge: null },
+  {
+  id: 'games',
+  label: 'Arcade',
+  icon: (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <path d="M6 12h4M8 10v4"/>
+      <circle cx="16" cy="10" r="1"/>
+      <circle cx="18" cy="14" r="1"/>
+      <path d="M7 6h10a4 4 0 014 4v4a4 4 0 01-4 4H7a4 4 0 01-4-4v-4a4 4 0 014-4z"/>
+    </svg>
+  )
+}
 ];
 
 // Search/Filter Suggestions

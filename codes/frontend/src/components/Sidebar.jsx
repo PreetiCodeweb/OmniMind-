@@ -11,7 +11,7 @@ const Sidebar = ({ active, setActive }) => {
 
       <div className="sidebar-section">
         <div className="sidebar-label">Workspace</div>
-        {MENU_ITEMS.slice(0, 6).map(item => (
+        {MENU_ITEMS.map(item => (
           <div key={item.id} className={`nav-item ${active === item.id ? 'active' : ''}`} onClick={() => setActive(item.id)}>
             <span className="nav-icon">{item.icon}</span>
             <span>{item.label}</span>

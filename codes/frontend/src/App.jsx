@@ -3,15 +3,15 @@ const { useState } = React;
 const App = () => {
   const [active, setActive] = useState('dashboard');
   const titles = {
-    dashboard: 'Dashboard',
-    chat: 'Chat',
-    passport: 'AI Passport',
-    vault: 'Memory Vault',
-    graph: 'Knowledge Graph',
-    router: 'AI Router',
-    settings: 'Settings',
-  };
-
+  dashboard: 'Dashboard',
+  chat: 'Chat',
+  passport: 'AI Passport',
+  vault: 'Memory Vault',
+  graph: 'Knowledge Graph',
+  router: 'AI Router',
+  games: 'OmniMind Arcade',
+  settings: 'Settings',
+};
   const renderView = () => {
     switch (active) {
       case 'dashboard': return <Dashboard setActive={setActive} />;
@@ -20,6 +20,7 @@ const App = () => {
       case 'vault': return <VaultView />;
       case 'graph': return <GraphView />;
       case 'router': return <RouterView />;
+      case 'games': return <GamesView />;
       case 'settings': return <SettingsView />;
       default: return <Dashboard setActive={setActive} />;
     }
