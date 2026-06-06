@@ -12,6 +12,7 @@ const games = [
     accent: "#A89CFF",
     players: "12.4k",
     difficulty: "Medium",
+    launchEndpoint: "http://localhost:8000/api/games/brain-challenge/start",
   },
   {
     id: 2,
@@ -24,6 +25,7 @@ const games = [
     accent: "#7FECFF",
     players: "9.1k",
     difficulty: "Hard",
+    launchEndpoint: "http://localhost:8000/api/games/ai-space-defender/start",
   },
   {
     id: 3,

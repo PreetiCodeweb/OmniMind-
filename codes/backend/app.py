@@ -245,7 +245,13 @@ def get_db():
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 CYBER_RUNNER_FILE = PROJECT_ROOT / "games" / "cyber_runner.py"
 CYBER_RUNNER_LOG = PROJECT_ROOT / "games" / "cyber_runner.log"
+AI_SPACE_DEFENDER_FILE = PROJECT_ROOT / "games" / "ai_space_defender.py"
+AI_SPACE_DEFENDER_LOG = PROJECT_ROOT / "games" / "ai_space_defender.log"
+BRAIN_CHALLENGE_FILE = PROJECT_ROOT / "games" / "brain_challenge.py"
+BRAIN_CHALLENGE_LOG = PROJECT_ROOT / "games" / "brain_challenge.log"
 cyber_runner_process = None
+ai_space_defender_process = None
+brain_challenge_process = None
 
 # ============ API ROUTES ============
 
@@ -298,6 +304,88 @@ async def start_cyber_runner():
         "pid": cyber_runner_process.pid,
         "file": str(CYBER_RUNNER_FILE),
         "log": str(CYBER_RUNNER_LOG),
+    }
+
+@app.post("/api/games/ai-space-defender/start", tags=["Games"])
+async def start_ai_space_defender():
+    """Start the local AI Space Defender Pygame script."""
+    global ai_space_defender_process
+
+    if not AI_SPACE_DEFENDER_FILE.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Game file not found: {AI_SPACE_DEFENDER_FILE}",
+        )
+
+    if ai_space_defender_process and ai_space_defender_process.poll() is None:
+        return {"status": "already_running", "file": str(AI_SPACE_DEFENDER_FILE)}
+
+    try:
+        with AI_SPACE_DEFENDER_LOG.open("w") as log_file:
+            ai_space_defender_process = subprocess.Popen(
+                [sys.executable, str(AI_SPACE_DEFENDER_FILE)],
+                cwd=str(AI_SPACE_DEFENDER_FILE.parent),
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                start_new_session=True,
+            )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Could not start game: {exc}")
+
+    time.sleep(0.6)
+    if ai_space_defender_process.poll() is not None:
+        log_text = AI_SPACE_DEFENDER_LOG.read_text(errors="replace")[-2000:]
+        raise HTTPException(
+            status_code=500,
+            detail=f"AI Space Defender exited immediately. {log_text}".strip(),
+        )
+
+    return {
+        "status": "started",
+        "pid": ai_space_defender_process.pid,
+        "file": str(AI_SPACE_DEFENDER_FILE),
+        "log": str(AI_SPACE_DEFENDER_LOG),
+    }
+
+@app.post("/api/games/brain-challenge/start", tags=["Games"])
+async def start_brain_challenge():
+    """Start the local Brain Challenge Pygame script."""
+    global brain_challenge_process
+
+    if not BRAIN_CHALLENGE_FILE.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Game file not found: {BRAIN_CHALLENGE_FILE}",
+        )
+
+    if brain_challenge_process and brain_challenge_process.poll() is None:
+        return {"status": "already_running", "file": str(BRAIN_CHALLENGE_FILE)}
+
+    try:
+        with BRAIN_CHALLENGE_LOG.open("w") as log_file:
+            brain_challenge_process = subprocess.Popen(
+                [sys.executable, str(BRAIN_CHALLENGE_FILE)],
+                cwd=str(BRAIN_CHALLENGE_FILE.parent),
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                start_new_session=True,
+            )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Could not start game: {exc}")
+
+    time.sleep(0.6)
+    if brain_challenge_process.poll() is not None:
+        log_text = BRAIN_CHALLENGE_LOG.read_text(errors="replace")[-2000:]
+        raise HTTPException(
+            status_code=500,
+            detail=f"Brain Challenge exited immediately. {log_text}".strip(),
+        )
+
+    return {
+        "status": "started",
+        "pid": brain_challenge_process.pid,
+        "file": str(BRAIN_CHALLENGE_FILE),
+        "log": str(BRAIN_CHALLENGE_LOG),
     }
 
 # ============ USER ROUTES ============
